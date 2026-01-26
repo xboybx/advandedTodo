@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Todo, Priority } from '@/types/todo';
 import { TodoCard } from './TodoCard';
+import { AddTodoInline } from './AddTodoInline';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -13,6 +14,7 @@ import { Search, Filter } from 'lucide-react';
 
 interface TodoListProps {
   todos: Todo[];
+  onAdd: (title: string, description: string, priority: Priority, dueDate: Date | null) => void;
   onToggle: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Todo>) => void;
   onDelete: (id: string) => void;
@@ -21,7 +23,7 @@ interface TodoListProps {
 type FilterStatus = 'all' | 'pending' | 'completed' | 'overdue';
 type SortBy = 'createdAt' | 'dueDate' | 'priority';
 
-export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps) => {
+export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoListProps) => {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterPriority, setFilterPriority] = useState<Priority | 'all'>('all');
@@ -36,13 +38,11 @@ export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps)
 
   const filteredTodos = todos
     .filter((todo) => {
-      // Search filter
       if (search && !todo.title.toLowerCase().includes(search.toLowerCase()) &&
           !todo.description.toLowerCase().includes(search.toLowerCase())) {
         return false;
       }
 
-      // Status filter
       if (filterStatus === 'pending' && todo.completed) return false;
       if (filterStatus === 'completed' && !todo.completed) return false;
       if (filterStatus === 'overdue') {
@@ -50,7 +50,6 @@ export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps)
         if (!todo.dueDate || new Date(todo.dueDate) >= now || todo.completed) return false;
       }
 
-      // Priority filter
       if (filterPriority !== 'all' && todo.priority !== filterPriority) return false;
 
       return true;
@@ -70,7 +69,12 @@ export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps)
     });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Inline Add Todo */}
+      <div className="glass-card p-4 rounded-lg border">
+        <AddTodoInline onAdd={onAdd} />
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
@@ -83,7 +87,7 @@ export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps)
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as FilterStatus)}>
             <SelectTrigger className="w-[130px]">
               <Filter className="h-4 w-4 mr-2" />
@@ -129,7 +133,7 @@ export const TodoList = ({ todos, onToggle, onUpdate, onDelete }: TodoListProps)
           <div className="text-center py-12">
             <p className="text-muted-foreground">No tasks found</p>
             <p className="text-sm text-muted-foreground mt-1">
-              {todos.length === 0 ? 'Create your first task to get started!' : 'Try adjusting your filters'}
+              {todos.length === 0 ? 'Type above to create your first task!' : 'Try adjusting your filters'}
             </p>
           </div>
         ) : (
