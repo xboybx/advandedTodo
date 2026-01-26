@@ -59,7 +59,7 @@ export const CalendarView = ({ todos, getTodosByDate }: CalendarViewProps) => {
                   <div
                     key={todo.id}
                     className={cn(
-                      'p-3 rounded-lg border bg-card/50',
+                      'p-3 rounded-lg border border-border/50',
                       todo.completed && 'opacity-60'
                     )}
                   >

@@ -63,13 +63,14 @@ export const useTodos = () => {
     title: string,
     description: string = '',
     priority: Priority = 'medium',
-    dueDate: Date | null = null
+    dueDate: Date | null = null,
+    notes: string = ''
   ) => {
     const newTodo: Todo = {
       id: generateId(),
       title,
       description,
-      notes: '',
+      notes,
       priority,
       completed: false,
       dueDate,

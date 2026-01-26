@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Priority } from '@/types/todo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,13 +8,15 @@ interface PriorityChartProps {
 }
 
 const COLORS: Record<Priority, string> = {
-  low: 'hsl(var(--priority-low))',
-  medium: 'hsl(var(--priority-medium))',
-  high: 'hsl(var(--priority-high))',
-  urgent: 'hsl(var(--priority-urgent))',
+  low: 'var(--chart-5)',
+  medium: 'var(--chart-3)',
+  high: 'var(--chart-2)',
+  urgent: 'var(--chart-1)',
 };
 
 export const PriorityChart = ({ data }: PriorityChartProps) => {
+  const navigate = useNavigate();
+
   const chartData = Object.entries(data)
     .map(([priority, count]) => ({
       name: priority.charAt(0).toUpperCase() + priority.slice(1),
@@ -21,6 +24,12 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
       priority: priority as Priority,
     }))
     .filter((item) => item.value > 0);
+
+  const handleSegmentClick = (data: any) => {
+    if (data && data.priority) {
+      navigate(`/todos/filter/${data.priority}`);
+    }
+  };
 
   if (chartData.length === 0) {
     return (
@@ -51,6 +60,8 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
               outerRadius={80}
               paddingAngle={2}
               dataKey="value"
+              onClick={handleSegmentClick}
+              className="cursor-pointer"
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[entry.priority]} />
@@ -58,10 +69,12 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: 'hsl(var(--popover))',
-                border: '1px solid hsl(var(--border))',
+                backgroundColor: 'var(--card)',
+                border: '1px solid var(--border)',
                 borderRadius: '8px',
+                color: 'var(--foreground)',
               }}
+              itemStyle={{ color: 'var(--foreground)' }}
             />
             <Legend />
           </PieChart>

@@ -3,6 +3,7 @@ import { Todo, Priority } from '@/types/todo';
 import { TodoCard } from './TodoCard';
 import { AddTodoInline } from './AddTodoInline';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -10,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, LayoutGrid, List } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TodoListProps {
   todos: Todo[];
@@ -22,12 +24,14 @@ interface TodoListProps {
 
 type FilterStatus = 'all' | 'pending' | 'completed' | 'overdue';
 type SortBy = 'createdAt' | 'dueDate' | 'priority';
+type ViewMode = 'list' | 'grid';
 
 export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoListProps) => {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterPriority, setFilterPriority] = useState<Priority | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortBy>('createdAt');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   const priorityWeight: Record<Priority, number> = {
     urgent: 4,
@@ -39,7 +43,7 @@ export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoLis
   const filteredTodos = todos
     .filter((todo) => {
       if (search && !todo.title.toLowerCase().includes(search.toLowerCase()) &&
-          !todo.description.toLowerCase().includes(search.toLowerCase())) {
+        !todo.description.toLowerCase().includes(search.toLowerCase())) {
         return false;
       }
 
@@ -87,7 +91,27 @@ export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoLis
           />
         </div>
 
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md border mr-2">
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('grid')}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+          </div>
+
           <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as FilterStatus)}>
             <SelectTrigger className="w-[130px]">
               <Filter className="h-4 w-4 mr-2" />
@@ -128,9 +152,14 @@ export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoLis
       </div>
 
       {/* Todo Items */}
-      <div className="space-y-3">
+      <div className={cn(
+        "gap-4",
+        viewMode === 'grid'
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-0"
+          : "flex flex-col space-y-3"
+      )}>
         {filteredTodos.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-12 col-span-full">
             <p className="text-muted-foreground">No tasks found</p>
             <p className="text-sm text-muted-foreground mt-1">
               {todos.length === 0 ? 'Type above to create your first task!' : 'Try adjusting your filters'}
@@ -144,6 +173,7 @@ export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoLis
               onToggle={onToggle}
               onUpdate={onUpdate}
               onDelete={onDelete}
+              className={viewMode === 'grid' ? 'h-full' : ''}
             />
           ))
         )}

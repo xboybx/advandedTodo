@@ -8,11 +8,11 @@ interface PriorityBadgeProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const priorityConfig: Record<Priority, { label: string; colorClass: string }> = {
-  low: { label: 'Low', colorClass: 'text-priority-low' },
-  medium: { label: 'Medium', colorClass: 'text-priority-medium' },
-  high: { label: 'High', colorClass: 'text-priority-high' },
-  urgent: { label: 'Urgent', colorClass: 'text-priority-urgent' },
+const priorityConfig: Record<Priority, { label: string; color: string }> = {
+  low: { label: 'Low', color: 'var(--chart-5)' },
+  medium: { label: 'Medium', color: 'var(--chart-3)' },
+  high: { label: 'High', color: 'var(--chart-2)' },
+  urgent: { label: 'Urgent', color: 'var(--chart-1)' },
 };
 
 const sizeConfig = {
@@ -23,18 +23,10 @@ const sizeConfig = {
 
 export const PriorityBadge = ({ priority, showLabel = false, size = 'md' }: PriorityBadgeProps) => {
   const config = priorityConfig[priority];
-  const starCount = priority === 'low' ? 1 : priority === 'medium' ? 2 : priority === 'high' ? 3 : 4;
 
   return (
-    <div className={cn('flex items-center gap-1', config.colorClass)}>
-      <div className="flex">
-        {Array.from({ length: starCount }).map((_, i) => (
-          <Star
-            key={i}
-            className={cn(sizeConfig[size], 'fill-current')}
-          />
-        ))}
-      </div>
+    <div className="flex items-center gap-1.5" style={{ color: config.color }}>
+      <Star className={cn(sizeConfig[size], 'fill-current')} />
       {showLabel && (
         <span className="text-xs font-medium">{config.label}</span>
       )}
