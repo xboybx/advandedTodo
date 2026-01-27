@@ -4,9 +4,11 @@ import { useRouter } from 'next/navigation';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Priority } from '@/types/todo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 interface PriorityChartProps {
   data: Record<Priority, number>;
+  loading?: boolean;
 }
 
 const COLORS: Record<Priority, string> = {
@@ -16,7 +18,7 @@ const COLORS: Record<Priority, string> = {
   urgent: '#8b5cf6', // violet-500
 };
 
-export const PriorityChart = ({ data }: PriorityChartProps) => {
+export const PriorityChart = ({ data, loading }: PriorityChartProps) => {
   const router = useRouter();
 
   const chartData = Object.entries(data)
@@ -33,13 +35,26 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
     }
   };
 
+  if (loading) {
+    return (
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="text-lg">Tasks by Priority</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-[240px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (chartData.length === 0) {
     return (
       <Card className="glass-card">
         <CardHeader>
           <CardTitle className="text-lg">Tasks by Priority</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-center h-[200px]">
+        <CardContent className="flex items-center justify-center h-[240px]">
           <p className="text-muted-foreground">No tasks to display</p>
         </CardContent>
       </Card>

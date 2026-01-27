@@ -6,14 +6,14 @@ import { useTodos } from '@/hooks/useTodos';
 import { Priority } from '@/types/todo';
 import { TodoCard } from '@/components/todo/TodoCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Loader2 } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 export default function FilteredTodos({ params }: { params: Promise<{ priority: string }> }) {
     const { priority } = use(params);
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
-    const { todos, updateTodo, deleteTodo, toggleComplete } = useTodos();
+    const { todos, loading, updateTodo, deleteTodo, toggleComplete } = useTodos();
     const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
@@ -62,7 +62,12 @@ export default function FilteredTodos({ params }: { params: Promise<{ priority: 
                     </div>
 
                     <div className="grid gap-3">
-                        {filteredTodos.length > 0 ? (
+                        {loading ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+                                <Loader2 className="h-10 w-10 animate-spin mb-2 text-primary" />
+                                <p className="text-sm animate-pulse">Loading {priorityLabel.toLowerCase()} tasks...</p>
+                            </div>
+                        ) : filteredTodos.length > 0 ? (
                             filteredTodos.map((todo) => (
                                 <TodoCard
                                     key={todo.id}

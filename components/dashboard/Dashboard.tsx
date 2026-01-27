@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, AlertTriangle, ListTodo } from 'lucide-react';
+import { CheckCircle2, Clock, AlertTriangle, ListTodo, Loader2 } from 'lucide-react';
 import { TodoStats, Todo } from '@/types/todo';
 import { StatsCard } from './StatsCard';
 import { PriorityChart } from './PriorityChart';
@@ -7,13 +7,23 @@ import { CalendarView } from './CalendarView';
 interface DashboardProps {
   stats: TodoStats;
   todos: Todo[];
+  loading?: boolean;
   getTodosByDate: (date: Date) => Todo[];
 }
 
-export const Dashboard = ({ stats, todos, getTodosByDate }: DashboardProps) => {
-  const completionRate = stats.total > 0 
-    ? Math.round((stats.completed / stats.total) * 100) 
+export const Dashboard = ({ stats, todos, loading = false, getTodosByDate }: DashboardProps) => {
+  const completionRate = stats.total > 0
+    ? Math.round((stats.completed / stats.total) * 100)
     : 0;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 h-full w-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground animate-pulse">Loading dashboard data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -48,7 +58,7 @@ export const Dashboard = ({ stats, todos, getTodosByDate }: DashboardProps) => {
 
       {/* Charts and Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <PriorityChart data={stats.byPriority} />
+        <PriorityChart data={stats.byPriority} loading={loading} />
         <CalendarView todos={todos} getTodosByDate={getTodosByDate} />
       </div>
     </div>

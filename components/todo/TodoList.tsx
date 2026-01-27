@@ -11,11 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Filter, LayoutGrid, List } from 'lucide-react';
+import { Search, Filter, LayoutGrid, List, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TodoListProps {
   todos: Todo[];
+  loading?: boolean;
   onAdd: (title: string, description: string, priority: Priority, dueDate: Date | null) => void;
   onToggle: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Todo>) => void;
@@ -26,7 +27,7 @@ type FilterStatus = 'all' | 'pending' | 'completed' | 'overdue';
 type SortBy = 'createdAt' | 'dueDate' | 'priority';
 type ViewMode = 'list' | 'grid';
 
-export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoListProps) => {
+export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, onDelete }: TodoListProps) => {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterPriority, setFilterPriority] = useState<Priority | 'all'>('all');
@@ -158,7 +159,12 @@ export const TodoList = ({ todos, onAdd, onToggle, onUpdate, onDelete }: TodoLis
           ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-0"
           : "flex flex-col space-y-3"
       )}>
-        {filteredTodos.length === 0 ? (
+        {loading ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <Loader2 className="h-8 w-8 animate-spin mb-2 text-primary" />
+            <p className="text-sm">Loading tasks...</p>
+          </div>
+        ) : filteredTodos.length === 0 ? (
           <div className="text-center py-12 col-span-full">
             <p className="text-muted-foreground">No tasks found</p>
             <p className="text-sm text-muted-foreground mt-1">

@@ -14,7 +14,7 @@ type TabType = 'dashboard' | 'todos';
 export default function Index() {
     const [activeTab, setActiveTab] = useState<TabType>('todos');
     const [mounted, setMounted] = useState(false);
-    const { todos, addTodo, updateTodo, deleteTodo, toggleComplete, getStats, getTodosByDate } = useTodos();
+    const { todos, loading, addTodo, updateTodo, deleteTodo, toggleComplete, getStats, getTodosByDate } = useTodos();
     const { theme, toggleTheme } = useTheme();
 
     const stats = getStats();
@@ -63,10 +63,16 @@ export default function Index() {
 
                     {/* Content */}
                     {activeTab === 'dashboard' ? (
-                        <Dashboard stats={stats} todos={todos} getTodosByDate={getTodosByDate} />
+                        <Dashboard
+                            stats={stats}
+                            todos={todos}
+                            loading={loading}
+                            getTodosByDate={getTodosByDate}
+                        />
                     ) : (
                         <TodoList
                             todos={todos}
+                            loading={loading}
                             onAdd={addTodo}
                             onToggle={toggleComplete}
                             onUpdate={updateTodo}
