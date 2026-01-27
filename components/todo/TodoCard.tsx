@@ -87,8 +87,8 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
         <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-baseline gap-3 flex-1 min-w-0">
-                <div className="shrink-0 max-w-[40%]">
+              <div className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3 flex-1 min-w-0">
+                <div className="shrink-0 w-full md:w-auto md:max-w-[40%]">
                   {editingField === 'title' ? (
                     <Input
                       value={editTitle}
@@ -115,8 +115,8 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
                   )}
                 </div>
 
-                {/* Description Container - Now on the right of title */}
-                <div className="flex-1 min-w-0 border-l pl-3 border-border/50">
+                {/* Description Container - Now on the right of title on desktop, below on mobile */}
+                <div className="flex-1 min-w-0 md:border-l md:pl-3 border-border/50">
                   {editingField === 'description' ? (
                     <Input
                       value={editDescription}

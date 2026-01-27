@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Filter, LayoutGrid, List, Loader2 } from 'lucide-react';
+import { Search, Filter, LayoutGrid, List, Loader2, SortAsc, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TodoListProps {
@@ -81,8 +81,9 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
       </div>
 
       {/* Filters */}
+      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+        <div className="relative flex-1 hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search tasks..."
@@ -92,9 +93,9 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
           />
         </div>
 
-        <div className="flex gap-2 flex-wrap items-center">
+        <div className="flex gap-2 flex-wrap items-center justify-end w-full md:w-auto">
           {/* View Toggle */}
-          <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md border mr-2">
+          <div className="hidden md:flex items-center gap-1 bg-muted/30 p-1 rounded-md border mr-2">
             <Button
               variant={viewMode === 'list' ? 'secondary' : 'ghost'}
               size="icon"
@@ -114,9 +115,11 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
           </div>
 
           <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as FilterStatus)}>
-            <SelectTrigger className="w-[130px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue />
+            <SelectTrigger className="w-auto md:w-[130px] px-2 md:px-3">
+              <Filter className="h-4 w-4 mr-0 md:mr-2" />
+              <div className="hidden md:block truncate">
+                <SelectValue />
+              </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Tasks</SelectItem>
@@ -127,8 +130,12 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
           </Select>
 
           <Select value={filterPriority} onValueChange={(v) => setFilterPriority(v as Priority | 'all')}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Priority" />
+            <SelectTrigger className="w-auto md:w-[130px] px-2 md:px-3">
+              <div className="hidden md:block truncate">
+                <SelectValue placeholder="Priority" />
+              </div>
+              {/* Fallback Icon for mobile since Priority usually just shows text */}
+              <AlertCircle className="md:hidden h-4 w-4" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Priority</SelectItem>
@@ -140,8 +147,12 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
           </Select>
 
           <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Sort by" />
+            <SelectTrigger className="w-auto md:w-[130px] px-2 md:px-3">
+              <div className="hidden md:block truncate">
+                <SelectValue placeholder="Sort by" />
+              </div>
+              {/* Fallback Icon for mobile */}
+              <SortAsc className="md:hidden h-4 w-4" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="createdAt">Date Created</SelectItem>

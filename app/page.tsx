@@ -28,8 +28,8 @@ export default function Index() {
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 <div className="w-full">
                     {/* Top Tabs & Theme Toggle Overlay */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                        <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-end md:flex-row md:items-center md:justify-between gap-4 mb-8">
+                        <div className="flex items-center order-1 md:order-none gap-2">
                             <TopTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
                             {/* Theme Toggle Button positioned after tabs */}
@@ -49,7 +49,7 @@ export default function Index() {
                             </Button>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right order-2 md:order-none w-full md:w-auto">
                             <h1 className="text-xl sm:text-2xl font-bold text-foreground">
                                 {activeTab === 'dashboard' ? 'Dashboard' : 'Todo List'}
                             </h1>
