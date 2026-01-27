@@ -6,13 +6,16 @@ interface PriorityBadgeProps {
   priority: Priority;
   showLabel?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  layout?: 'row' | 'column';
+  className?: string; // Add this
+  textClassName?: string; // Add this
 }
 
 const priorityConfig: Record<Priority, { label: string; color: string }> = {
-  low: { label: 'Low', color: 'hsl(var(--chart-5))' },
-  medium: { label: 'Medium', color: 'hsl(var(--chart-3))' },
-  high: { label: 'High', color: 'hsl(var(--chart-2))' },
-  urgent: { label: 'Urgent', color: 'hsl(var(--chart-1))' },
+  low: { label: 'Low', color: '#22c55e' }, // green-500
+  medium: { label: 'Medium', color: '#eab308' }, // yellow-500
+  high: { label: 'High', color: '#ef4444' }, // red-500
+  urgent: { label: 'Urgent', color: '#8b5cf6' }, // violet-500
 };
 
 const sizeConfig = {
@@ -21,14 +24,32 @@ const sizeConfig = {
   lg: 'h-5 w-5',
 };
 
-export const PriorityBadge = ({ priority, showLabel = false, size = 'md' }: PriorityBadgeProps) => {
+export const PriorityBadge = ({
+  priority,
+  showLabel = false,
+  size = 'md',
+  layout = 'row',
+  className,
+  textClassName
+}: PriorityBadgeProps) => {
   const config = priorityConfig[priority];
 
   return (
-    <div className="flex items-center gap-1.5" style={{ color: config.color }}>
+    <div
+      className={cn(
+        "flex items-center transition-colors",
+        layout === 'column' ? "flex-col gap-0.5" : "gap-1.5",
+        className
+      )}
+      style={{ color: config.color }}
+    >
       <Star className={cn(sizeConfig[size], 'fill-current')} />
       {showLabel && (
-        <span className="text-xs font-medium">{config.label}</span>
+        <span className={cn(
+          "font-medium",
+          layout === 'column' ? "text-[10px] leading-none" : "text-xs",
+          textClassName
+        )}>{config.label}</span>
       )}
     </div>
   );

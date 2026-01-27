@@ -4,7 +4,7 @@ import { Check, Trash2, Calendar as CalendarIcon, FileText, X, Save, ChevronDown
 import { Todo, Priority } from '@/types/todo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
@@ -85,17 +85,9 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
     >
       <CardContent className="p-3">
         <div className="flex items-start gap-4">
-          <Checkbox
-            checked={todo.completed}
-            onCheckedChange={() => onToggle(todo.id)}
-            className="mt-1 h-4 w-4"
-          />
-
           <div className="flex-1 min-w-0">
-            {/* Main Content Row: Title, Description, and Priority */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-baseline gap-3 flex-1 min-w-0">
-                {/* Title Container */}
                 <div className="shrink-0 max-w-[40%]">
                   {editingField === 'title' ? (
                     <Input
@@ -108,7 +100,8 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
                     />
                   ) : (
                     <h3
-                      onClick={() => {
+                      onClick={() => onToggle(todo.id)}
+                      onDoubleClick={() => {
                         setEditingField('title');
                         setEditTitle(todo.title);
                       }}
@@ -154,7 +147,13 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
               <Popover>
                 <PopoverTrigger asChild>
                   <button className="hover:opacity-80 transition-opacity shrink-0">
-                    <PriorityBadge priority={todo.priority} size="sm" />
+                    <PriorityBadge
+                      priority={todo.priority}
+                      size="sm"
+                      showLabel={true}
+                      layout="column"
+                      textClassName="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-2" align="end">
@@ -275,8 +274,8 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
               </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </div >
+      </CardContent >
+    </Card >
   );
 };

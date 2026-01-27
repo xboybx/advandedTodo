@@ -9,8 +9,8 @@ interface TopTabsProps {
 }
 
 const tabs = [
-  { id: 'dashboard' as TabType, label: 'Dashboard', icon: LayoutDashboard },
   { id: 'todos' as TabType, label: 'Todo List', icon: CheckSquare },
+  { id: 'dashboard' as TabType, label: 'Dashboard', icon: LayoutDashboard },
 ];
 
 export const TopTabs = ({ activeTab, onTabChange }: TopTabsProps) => {

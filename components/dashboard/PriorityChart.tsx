@@ -10,10 +10,10 @@ interface PriorityChartProps {
 }
 
 const COLORS: Record<Priority, string> = {
-  low: 'hsl(var(--chart-5))',
-  medium: 'hsl(var(--chart-3))',
-  high: 'hsl(var(--chart-2))',
-  urgent: 'hsl(var(--chart-1))',
+  low: '#22c55e', // green-500
+  medium: '#eab308', // yellow-500
+  high: '#ef4444', // red-500
+  urgent: '#8b5cf6', // violet-500
 };
 
 export const PriorityChart = ({ data }: PriorityChartProps) => {
@@ -52,7 +52,7 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
         <CardTitle className="text-lg">Tasks by Priority</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={240}>
           <PieChart>
             <Pie
               data={chartData}
@@ -78,7 +78,10 @@ export const PriorityChart = ({ data }: PriorityChartProps) => {
               }}
               itemStyle={{ color: 'hsl(var(--foreground))' }}
             />
-            <Legend />
+            <Legend
+              wrapperStyle={{ paddingTop: '20px' }}
+              iconType="circle"
+            />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>
