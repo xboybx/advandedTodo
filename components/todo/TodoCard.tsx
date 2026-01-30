@@ -22,7 +22,8 @@ interface TodoCardProps {
 }
 
 export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: TodoCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isNotesExpanded, setIsNotesExpanded] = useState(false);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState(todo.title);
   const [editDescription, setEditDescription] = useState(todo.description);
@@ -84,21 +85,22 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
       )}
     >
       <CardContent className="p-3">
-        <div className="flex items-start gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3 flex-1 min-w-0">
-                <div className="shrink-0 w-full md:w-auto md:max-w-[40%]">
-                  {editingField === 'title' ? (
-                    <Input
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, 'title')}
-                      onBlur={() => handleSaveField('title')}
-                      className="font-medium h-7 text-sm py-1"
-                      autoFocus
-                    />
-                  ) : (
+        <div className="flex flex-col gap-1">
+          {/* Top Row: Title + Priority */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0 flex items-center gap-2">
+              <div className="flex-1 min-w-0">
+                {editingField === 'title' ? (
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e, 'title')}
+                    onBlur={() => handleSaveField('title')}
+                    className="font-medium h-7 text-sm py-1"
+                    autoFocus
+                  />
+                ) : (
+                  <div className="flex items-center gap-2">
                     <h3
                       onClick={() => onToggle(todo.id)}
                       onDoubleClick={() => {
@@ -112,47 +114,21 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
                     >
                       {todo.title}
                     </h3>
-                  )}
-                </div>
-
-                {/* Description Container - Now on the right of title on desktop, below on mobile */}
-                <div className="flex-1 min-w-0 md:border-l md:pl-3 border-border/50">
-                  {editingField === 'description' ? (
-                    <Input
-                      value={editDescription}
-                      onChange={(e) => setEditDescription(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, 'description')}
-                      onBlur={() => handleSaveField('description')}
-                      className="text-xs h-6 py-0.5"
-                      autoFocus
-                      placeholder="Add description..."
-                    />
-                  ) : (
-                    <p
-                      onClick={() => {
-                        setEditingField('description');
-                        setEditDescription(todo.description);
-                      }}
-                      className="text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors truncate opacity-80"
-                    >
-                      {todo.description || (
-                        <span className="italic opacity-40">Add description...</span>
-                      )}
-                    </p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
+            </div>
 
-              {/* Priority - clickable to change */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Priority Badge */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="hover:opacity-80 transition-opacity shrink-0">
+                  <button className="hover:opacity-80 transition-opacity">
                     <PriorityBadge
                       priority={todo.priority}
                       size="sm"
-                      showLabel={true}
-                      layout="column"
-                      textClassName="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      showLabel={false}
+                      className="w-auto"
                     />
                   </button>
                 </PopoverTrigger>
@@ -164,10 +140,51 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
                 </PopoverContent>
               </Popover>
             </div>
+          </div>
 
-            {/* Meta row */}
-            <div className="flex items-center gap-4 mt-3 flex-wrap">
-              {/* Date - editable */}
+          {/* Description Row - Always Visible but Collapsible text */}
+          <div className="w-full">
+            {editingField === 'description' ? (
+              <Input
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, 'description')}
+                onBlur={() => handleSaveField('description')}
+                className="text-xs h-6 py-0.5 w-full mt-1"
+                autoFocus
+                placeholder="Add description..."
+              />
+            ) : (
+              <p
+                onClick={() => setIsDescExpanded(!isDescExpanded)}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  setEditingField('description');
+                  setEditDescription(todo.description);
+                }}
+                className={cn(
+                  "text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-all duration-200 mt-0.5 break-words",
+                  !isDescExpanded && "line-clamp-1 opacity-80"
+                )}
+              >
+                {todo.description || (
+                  <span
+                    className="italic opacity-40 hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingField('description');
+                      setEditDescription(todo.description);
+                    }}
+                  >Add description...</span>
+                )}
+              </p>
+            )}
+          </div>
+
+          {/* Meta Row */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-3">
+              {/* Date */}
               <Popover>
                 <PopoverTrigger asChild>
                   <button
@@ -214,68 +231,69 @@ export const TodoCard = ({ todo, onToggle, onUpdate, onDelete, className }: Todo
                 </PopoverContent>
               </Popover>
 
-              {/* Notes toggle */}
+              {/* Notes Toggle */}
               <button
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={() => setIsNotesExpanded(!isNotesExpanded)}
                 className="flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
               >
                 <FileText className="h-2.5 w-2.5 shrink-0 text-[#FFFDD0]" />
                 <span className="leading-none pt-[0.5px]">Notes {todo.notes ? '(1)' : ''}</span>
-                {isExpanded ? (
+                {isNotesExpanded ? (
                   <ChevronUp className="h-2.5 w-2.5 shrink-0" />
                 ) : (
                   <ChevronDown className="h-2.5 w-2.5 shrink-0" />
                 )}
               </button>
-
-              {/* Delete button */}
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-5 w-5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive flex items-center justify-center"
-                onClick={() => onDelete(todo.id)}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
             </div>
 
-            {/* Expandable notes section */}
-            <div
-              className={cn(
-                'overflow-hidden transition-all duration-300 ease-out',
-                isExpanded ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0'
-              )}
+            {/* Delete */}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive flex items-center justify-center"
+              onClick={() => onDelete(todo.id)}
             >
-              <div className="p-2 bg-muted/30 border rounded-md">
-                {editingField === 'notes' ? (
-                  <Textarea
-                    value={editNotes}
-                    onChange={(e) => setEditNotes(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, 'notes')}
-                    onBlur={() => handleSaveField('notes')}
-                    className="text-[11px] resize-none bg-background py-1"
-                    rows={2}
-                    autoFocus
-                    placeholder="Add notes..."
-                  />
-                ) : (
-                  <p
-                    onClick={() => {
-                      setEditingField('notes');
-                      setEditNotes(todo.notes);
-                    }}
-                    className="text-[11px] text-muted-foreground whitespace-pre-wrap cursor-pointer hover:text-foreground transition-colors min-h-[1.5rem]"
-                  >
-                    {todo.notes || (
-                      <span className="italic opacity-50">Click to add notes...</span>
-                    )}
-                  </p>
-                )}
-              </div>
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+
+          {/* Notes Section - Collapsible */}
+          <div
+            className={cn(
+              'overflow-hidden transition-all duration-300 ease-out',
+              isNotesExpanded ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0'
+            )}
+          >
+            <div className="p-2 bg-muted/30 border rounded-md">
+              {editingField === 'notes' ? (
+                <Textarea
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, 'notes')}
+                  onBlur={() => handleSaveField('notes')}
+                  className="text-[11px] resize-none bg-background py-1"
+                  rows={2}
+                  autoFocus
+                  placeholder="Add notes..."
+                />
+              ) : (
+                <p
+                  onClick={() => {
+                    setEditingField('notes');
+                    setEditNotes(todo.notes);
+                  }}
+                  className="text-[11px] text-muted-foreground whitespace-pre-wrap cursor-pointer hover:text-foreground transition-colors min-h-[1.5rem]"
+                >
+                  {todo.notes || (
+                    <span className="italic opacity-50">Click to add notes...</span>
+                  )}
+                </p>
+              )}
             </div>
           </div>
-        </div >
-      </CardContent >
-    </Card >
+
+        </div>
+      </CardContent>
+    </Card>
   );
 };

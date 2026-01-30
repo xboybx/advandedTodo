@@ -102,7 +102,7 @@ export const AddTodoInline = ({ onAdd }: AddTodoInlineProps) => {
       {/* Animated details panel - slides down smoothly from under the input */}
       <div
         className={cn(
-          'overflow-hidden transition-all duration-500 ease-in-out w-[90%] pl-1',
+          'overflow-hidden transition-all duration-1000 ease-in-out w-[90%] pl-1',
           showDetails ? 'max-h-[200px] opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
         )}
       >
