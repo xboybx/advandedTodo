@@ -118,4 +118,29 @@
     .animate-slide-up {
         animation: slide-up 0.4s ease-out;
     }
+
+    /* Gradient text loader used by todo list */
+    .text-gradient-loader {
+        display: inline-block;
+        background-image: linear-gradient(90deg,#000000,#d3d3d3,#000000);
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+        color: transparent !important;
+        background-size: 300% 100%;
+        background-repeat: no-repeat;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        animation: gradientShift 2.5s linear infinite;
+        mix-blend-mode: normal;
+        isolation: isolate;
+        will-change: background-position;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
 }

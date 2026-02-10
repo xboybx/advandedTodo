@@ -171,9 +171,10 @@ export const TodoList = ({ todos, loading = false, onAdd, onToggle, onUpdate, on
           : "flex flex-col space-y-3"
       )}>
         {loading ? (
-          <div className="col-span-full flex flex-col items-center justify-center py-12 text-muted-foreground">
-            <Loader2 className="h-8 w-8 animate-spin mb-2 text-primary" />
-            <p className="text-sm">Loading tasks...</p>
+          <div className="col-span-full flex flex-col items-center justify-center py-12">
+            <p className="text-sm">
+              <span className="text-gradient-loader">Loading tasks...</span>
+            </p>
           </div>
         ) : filteredTodos.length === 0 ? (
           <div className="text-center py-12 col-span-full">
