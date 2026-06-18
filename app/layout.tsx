@@ -5,6 +5,10 @@ import { Providers } from '@/components/Providers';
 export const metadata: Metadata = {
     title: 'TaskFlow - Todo Application',
     description: 'A comprehensive todo application with dashboard analytics',
+    icons: {
+        icon: '/favicon.png',
+        apple: '/favicon.png',
+    },
 };
 
 export default function RootLayout({
